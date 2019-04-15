@@ -5,7 +5,7 @@ const path = require('path');
 function getLocaleFilesInfo(config) {
     const {dirToSearch = process.cwd(), localeKey} = config;
     return new Promise((resolve, reject) => {
-        glob('**/i18n/**/*.*', {cwd: dirToSearch}, (err, localeFiles) => {
+        glob('**/i18n/**/*.properties', {cwd: dirToSearch}, (err, localeFiles) => {
             if (localeFiles.length === 0) return resolve([]);
             const resultArr = [];
             for (const localeFile of localeFiles) {

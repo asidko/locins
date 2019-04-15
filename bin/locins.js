@@ -54,17 +54,7 @@ function getUpdatedFileContent(info, localeKey) {
         case '.properties': {
             return getUpdateFileContentForProperties(localeKey, info);
         }
-        case '.json': {
-            return getUpdateFileContentForJson(localeKey, info);
-        }
     }
-}
-
-function getUpdateFileContentForJson(localeKey, info) {
-    const localeFileText = fs.readFileSync(info.filePath, 'utf8');
-    const localeContentObj = JSON.parse(localeFileText);
-    localeContentObj[localeKey] = info.localeValue;
-    return JSON.stringify(localeContentObj, null, 4);
 }
 
 function getUpdateFileContentForProperties(localeKey, info) {
