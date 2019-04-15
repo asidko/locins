@@ -1,0 +1,34 @@
+{
+  "name": "locins",
+  "version": "1.0.6",
+  "description": "Localized messages insert helper",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "locins": "./bin/locins.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sidkoalex/locins.git"
+  },
+  "keywords": [
+    "locale",
+    "i18n",
+    "spring"
+  ],
+  "author": "Alex Sidko",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sidkoalex/locins/issues"
+  },
+  "homepage": "https://github.com/sidkoalex/locins#readme",
+  "dependencies": {
+    "colors": "^1.3.3",
+    "fs-extra": "^7.0.1",
+    "glob": "^7.1.3",
+    "nmp": "^1.0.3",
+    "promptly": "^3.0.3"
+  }
+}
