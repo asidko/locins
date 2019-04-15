@@ -5,14 +5,11 @@ const path = require('path');
 function getLocaleFilesInfo(config) {
     const {dirToSearch = process.cwd(), localeKey} = config;
     return new Promise((resolve, reject) => {
-        glob('**/i18n/', {cwd: dirToSearch}, (err, files) => {
-            if (files.length === 0) return resolve([]);
+        glob('**/i18n/**/*.*', {cwd: dirToSearch}, (err, localeFiles) => {
+            if (localeFiles.length === 0) return resolve([]);
             const resultArr = [];
-
-            const localeDir = path.join(dirToSearch, files[0]);
-            const localeFiles = fs.readdirSync(localeDir);
-            localeFiles.forEach(localeFile => {
-                const localeFilePath = path.join(localeDir, localeFile);
+            for (const localeFile of localeFiles) {
+                const localeFilePath = path.join(dirToSearch, localeFile);
                 const localeFileLines = fs.readFileSync(localeFilePath, 'utf8').split('\n');
                 const localeLang = getLangFromName(localeFile, 'en');
 
@@ -25,12 +22,12 @@ function getLocaleFilesInfo(config) {
                     lang: localeLang,
                     lineToInsertIndex: bestMatchLineIndex + 1
                 });
-            });
-
+            }
             resolve(resultArr);
         });
-    })
+    });
 }
+
 
 function findBestLineIndexStartsWith(lines, text) {
     for (let i = 0; i < text.length; i++) {

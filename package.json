@@ -1,6 +1,6 @@
 {
   "name": "locins",
-  "version": "1.0.6",
+  "version": "1.0.9",
   "description": "Localized messages insert helper",
   "main": "index.js",
   "scripts": {

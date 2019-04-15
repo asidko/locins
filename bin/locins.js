@@ -6,6 +6,7 @@ const getLocaleFilesInfo = require('../index');
 const colors = require('colors');
 const promptly = require('promptly');
 const fs = require('fs-extra');
+const path = require('path');
 
 const equalLangKeys = [
     ["uk", "ua"]
@@ -38,12 +39,7 @@ const equalLangKeys = [
         })
         .then(async fileInfos => {
             for (const info of fileInfos) {
-                const localeFileLines = fs.readFileSync(info.filePath, 'utf8').split('\n');
-
-                const localeRecord = localeKey + '=' + info.localeValue;
-                localeFileLines.splice(info.lineToInsertIndex, 0, localeRecord);
-
-                const localeFileLinesUpdatedText = localeFileLines.join('\n');
+                const localeFileLinesUpdatedText = getUpdatedFileContent(info, localeKey);
                 fs.writeFileSync(info.filePath, localeFileLinesUpdatedText);
                 console.log(`Appended to ${info.filePath} on line ${info.lineToInsertIndex + 1}`)
             }
@@ -52,3 +48,28 @@ const equalLangKeys = [
             console.log("Rejected.")
         });
 })();
+
+function getUpdatedFileContent(info, localeKey) {
+    switch (path.extname(info.filePath)) {
+        case '.properties': {
+            return getUpdateFileContentForProperties(localeKey, info);
+        }
+        case '.json': {
+            return getUpdateFileContentForJson(localeKey, info);
+        }
+    }
+}
+
+function getUpdateFileContentForJson(localeKey, info) {
+    const localeFileText = fs.readFileSync(info.filePath, 'utf8');
+    const localeContentObj = JSON.parse(localeFileText);
+    localeContentObj[localeKey] = info.localeValue;
+    return JSON.stringify(localeContentObj, null, 4);
+}
+
+function getUpdateFileContentForProperties(localeKey, info) {
+    const localeFileLines = fs.readFileSync(info.filePath, 'utf8').split('\n');
+    const localeRecord = localeKey + '=' + info.localeValue;
+    localeFileLines.splice(info.lineToInsertIndex, 0, localeRecord);
+    return localeFileLines.join('\n');
+}
