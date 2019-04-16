@@ -5,27 +5,37 @@ const path = require('path');
 function getLocaleFilesInfo(config) {
     const {dirToSearch = process.cwd(), localeKey} = config;
     return new Promise((resolve, reject) => {
-        glob('**/i18n/**/*.properties', {cwd: dirToSearch}, (err, localeFiles) => {
-            if (localeFiles.length === 0) return resolve([]);
-            const resultArr = [];
-            for (const localeFile of localeFiles) {
-                const localeFilePath = path.join(dirToSearch, localeFile);
-                const localeFileLines = fs.readFileSync(localeFilePath, 'utf8').split('\n');
-                const localeLang = getLangFromName(localeFile, 'en');
-
-                let bestMatchLineIndex = findBestLineIndexStartsWith(localeFileLines, localeKey);
-                if (bestMatchLineIndex < 0) bestMatchLineIndex = localeFileLines.length;
-
-                resultArr.push({
-                    fileName: localeFile,
-                    filePath: localeFilePath,
-                    lang: localeLang,
-                    lineToInsertIndex: bestMatchLineIndex + 1
+        glob('src/**/i18n/**/*.properties', {cwd: dirToSearch}, (err, localeFiles) => {
+            if (localeFiles.length !== 0) {
+                parseLocaleFiles(localeFiles, dirToSearch, localeKey, resolve);
+            } else {
+                glob('**/i18n/**/*.properties', {cwd: dirToSearch}, (err, localeFiles) => {
+                    if (localeFiles.length === 0) return resolve([]);
+                    parseLocaleFiles(localeFiles, dirToSearch, localeKey, resolve);
                 });
             }
-            resolve(resultArr);
         });
     });
+}
+
+function parseLocaleFiles(localeFiles, dirToSearch, localeKey, resolve) {
+    const resultArr = [];
+    for (const localeFile of localeFiles) {
+        const localeFilePath = path.join(dirToSearch, localeFile);
+        const localeFileLines = fs.readFileSync(localeFilePath, 'utf8').split('\n');
+        const localeLang = getLangFromName(localeFile, 'en');
+
+        let bestMatchLineIndex = findBestLineIndexStartsWith(localeFileLines, localeKey);
+        if (bestMatchLineIndex < 0) bestMatchLineIndex = localeFileLines.length;
+
+        resultArr.push({
+            fileName: localeFile,
+            filePath: localeFilePath,
+            lang: localeLang,
+            lineToInsertIndex: bestMatchLineIndex + 1
+        });
+    }
+    resolve(resultArr);
 }
 
 
