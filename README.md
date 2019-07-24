@@ -1,5 +1,7 @@
 # Locale Insert
 
+If you have a multilingual project, you have probably come across the fact that adding translations for messages is very tiring, because you need to manually open each language file and look for a suitable place to insert a line with the translation. This small utility will help you with this. Simply enter the key for the new translation and it will prompt you to enter a value for each language, then it will automatically insert the records in the most suitable place in the file.
+
 ## Installing
 
 Install __locins__ util globally via npm
